@@ -1,0 +1,24 @@
+<!-- LAUNCH file to run VINS-fusion in go1 robot-->
+
+<launch>
+
+    <!-- VINS config -->
+    <param name="vins_config_file" type="string" value="$(find vins)/config/vins_config.yaml" />
+
+    <!-- To run VINS Fusion -->
+    <node name="vins_estimator" pkg="vins" type="vins_node"
+            args="$(find vins)/config/vins_config.yaml" output="screen"/>
+
+    <!-- To perform Loop Closure -->
+    <!-- <node name="vinsloopfusion" pkg="loop_fusion" type="loop_fusion_node"
+            args="$(find vins)/config/vins_config.yaml" output="screen"/> -->
+
+    <!-- For visualization in rviz -->
+    <node name="rvizvisualisation" pkg="rviz" type="rviz" output="log" args="-d $(find vins)/config/vins_rviz_config.rviz" />
+
+    <!-- visualization using robot description -->
+    <param name="robot_description" textfile="$(find go1_description)/urdf/go1.urdf" />
+    <remap from="/joint_states" to="/go1_filterd_joint" />
+    <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+</launch>
